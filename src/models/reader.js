@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     email: {
       type: DataTypes.STRING,
       validate: {
-        // allowNull: false,
+        allowNull: false,
         isEmail: {
           args: true,
           msg: "Valid email required",
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       validate: {
-        // allowNull: false,
+        allowNull: false,
         len: {
           args: [8],
           msg: "Password needs to be 8 characters or more"
