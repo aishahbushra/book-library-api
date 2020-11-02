@@ -14,7 +14,7 @@ const createReader = (req, res) => {
     .then(newReaderCreated => res.status(201).json(newReaderCreated))
     .catch(error => {
       console.log(error);
-      if (error.errors[0].type === 'Validation error') {
+      if (error.errors[0].type === 'Validation error' || 'notNull Violation') {
         res.status(400).json(error.message);
       }
       else { res.status(500).json(error) };

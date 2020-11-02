@@ -2,8 +2,8 @@ module.exports = (sequelize, DataTypes) => {
   const schema = {
     email: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        allowNull: false,
         isEmail: {
           args: true,
           msg: "Valid email required",
@@ -12,14 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
-      validate: {
-        allowNull: false
-      }
+      allowNull: false
+
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false,
       validate: {
-        allowNull: false,
         len: {
           args: [8],
           msg: "Password needs to be 8 characters or more"

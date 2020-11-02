@@ -14,7 +14,7 @@ describe('/books', () => {
           title: 'The Goldfinch',
           author: 'Donna Tartt',
           genre: 'Fiction',
-          ISBN: '1'
+          ISBN: '1234'
 
         });
         const newBookRecord = await Book.findByPk(response.body.id, {
@@ -26,8 +26,25 @@ describe('/books', () => {
         expect(newBookRecord.title).to.equal('The Goldfinch');
         expect(newBookRecord.author).to.equal('Donna Tartt');
         expect(newBookRecord.genre).to.equal('Fiction');
-        expect(newBookRecord.ISBN).to.equal('1');
+        expect(newBookRecord.ISBN).to.equal('1234');
       });
+
+      it('doesnt allow a IBSN less than 4 characters', async () => {
+        const response = await (await request(app).post('/books').send({
+          title: 'Normal People',
+          author: 'Sally Rooney',
+          genre: 'Fiction',
+          ISBN: '123'
+        }));
+        const newBookRecord = await Book.findByPk(response.body.id, {
+          raw: true,
+
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body).to.equal('Validation error: ISBN must be 4 characters or longer');
+      });
+
     });
   });
 
@@ -42,10 +59,10 @@ describe('/books', () => {
           title: 'The Goldfinch',
           author: 'Donna Tartt',
           genre: 'Fiction',
-          ISBN: '1'
+          ISBN: '1234'
         }),
-        Book.create({ title: 'The Handmaids Tail', author: 'Margaret Atwood', genre: 'Fiction', ISBN: '2' }),
-        Book.create({ title: 'The Crucible', author: 'Arthur Miller', genre: 'Fiction', ISBN: '3' }),
+        Book.create({ title: 'The Handmaids Tail', author: 'Margaret Atwood', genre: 'Fiction', ISBN: '2345' }),
+        Book.create({ title: 'The Crucible', author: 'Arthur Miller', genre: 'Fiction', ISBN: '3456' }),
       ]);
     });
 

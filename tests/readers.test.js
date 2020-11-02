@@ -13,6 +13,7 @@ describe('/readers', () => {
         const response = await request(app).post('/readers').send({
           name: 'Elizabeth Bennet',
           email: 'future_ms_darcy@gmail.com',
+          password: 'fakepassword'
         });
         const newReaderRecord = await Reader.findByPk(response.body.id, {
           raw: true,
@@ -23,6 +24,37 @@ describe('/readers', () => {
         expect(newReaderRecord.name).to.equal('Elizabeth Bennet');
         expect(newReaderRecord.email).to.equal('future_ms_darcy@gmail.com');
       });
+
+      it('doesnt allow incorrectly written email addresses', async () => {
+        const response = await (await request(app).post('/readers').send({
+          name: 'Aishah Bushra',
+          email: 'aishahbushra.hotmail.co.uk',
+          password: 'fakepassword'
+        }));
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body).to.equal('Validation error: Valid email required');
+      });
+
+      it('doesnt allow a password less than 8 characters', async () => {
+        const response = await (await request(app).post('/readers').send({
+          name: 'Aishah Bushra',
+          email: 'aishahbushra@hotmail.co.uk',
+          password: 'fakepas'
+        }));
+        const newReaderRecord = await Reader.findByPk(response.body.id, {
+          raw: true,
+
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body).to.equal('Validation error: Password needs to be 8 characters or more');
+      });
+
     });
   });
 
@@ -36,9 +68,10 @@ describe('/readers', () => {
         Reader.create({
           name: 'Elizabeth Bennet',
           email: 'future_ms_darcy@gmail.com',
+          password: '123456789'
         }),
-        Reader.create({ name: 'Arya Stark', email: 'vmorgul@me.com' }),
-        Reader.create({ name: 'Lyra Belacqua', email: 'darknorth123@msn.org' }),
+        Reader.create({ name: 'Arya Stark', email: 'vmorgul@me.com', password: '123456789' }),
+        Reader.create({ name: 'Lyra Belacqua', email: 'darknorth123@msn.org', password: '123456789' }),
       ]);
     });
 
