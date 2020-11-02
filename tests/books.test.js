@@ -45,6 +45,22 @@ describe('/books', () => {
         expect(response.body).to.equal('Validation error: ISBN must be 4 characters or longer');
       });
 
+      it('doesnt allow missing fields', async () => {
+        const response = await (await request(app).post('/books').send({
+          title: 'Normal People',
+
+          genre: 'Fiction',
+          ISBN: '1234'
+        }));
+        const newBookRecord = await Book.findByPk(response.body.id, {
+          raw: true,
+
+        });
+
+        expect(response.status).to.equal(400);
+        expect(response.body).to.equal('notNull Violation: Book.author cannot be null');
+      });
+
     });
   });
 
